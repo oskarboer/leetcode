@@ -25,8 +25,27 @@ impl Solution {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test1() {
+        let output = vec![true, false, true];
 
+        assert_eq!(Solution::check_arithmetic_subarrays(vec![4,6,5,9,3,7], vec![0,0,2], vec![2,3,5]), output);
+    }
 
+    #[test]
+    fn test2() {
+        let nums = vec![-12,-9,-3,-12,-6,15,20,-25,-20,-15,-10];
+        let l = vec![0,1,6,4,8,7];
+        let r = vec![4,4,9,7,9,10];
+
+        let output = vec![false,true,false,false,true,true];
+
+        assert_eq!(Solution::check_arithmetic_subarrays(nums, l, r), output);
+    }
+}
 
 
 struct Solution {}
