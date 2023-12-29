@@ -28,7 +28,7 @@ impl Solution {
             for task in (day + 1)..n {
                 // search for range in what to look for min:
                 let mut prev_big = task - 1;
-                for i in (0..(task-1)).rev() {
+                for i in (0..=(task-1)).rev() {
                     if job_difficulty[task] >= job_difficulty[i] {
                         prev_big = i;
                     } else {
@@ -37,26 +37,24 @@ impl Solution {
                 }
                 let min_day_before = dp[day - 1][(prev_big.max(day - 1))..=(task-1)].iter().fold(i32::MAX - 1000000, |a, e| a.min(*e)) + job_difficulty[task];
 
-                // // search for big in the same day
-                // let mut prev_larger = task - 1;
-                // for i in (0..(task-1)).rev() {
-                //     if job_difficulty[task] <= job_difficulty[i] {
-                //         prev_larger = i;
-                //     } else {
-                //         break;
-                //     }
-                // }
 
 
+                // search for big in the same day
                 let mut min_same_day = i32::MAX;
-                if job_difficulty[task - 1] >= job_difficulty[task] {
-                    // min_same_day = dp[day][(prev_larger.max(day))..(task-1)].iter().fold(i32::MAX, |a, e| a.min(*e));
-                    min_same_day = dp[day][task - 1];
+                let mut prev_larger = task;
+                for i in (day..=(task-1)).rev() {
+                    if job_difficulty[prev_larger] <= job_difficulty[i]{
+                        prev_larger = i;
+                        min_same_day = min_same_day.min(dp[day][i]);
+                    }
                 }
 
-                // println!("day: {day}, task: {task}, min same {min_same_day}, min before {min_day_before}");
+
 
                 dp[day][task] = min_day_before.min(min_same_day);
+
+                println!("day: {day}, task: {task}, min same {min_same_day}, min before {min_day_before}");
+
             }
         }
 
@@ -68,9 +66,13 @@ impl Solution {
     }
 }
 
+
+
+
 #[cfg(test)]
 mod test {
-    use super::*;
+    use super::Solution;
+    
 
     #[test]
     fn test1() {
@@ -107,7 +109,13 @@ mod test {
     fn test7() {
         assert_eq!(Solution::min_difficulty(vec![3, 7, 9, 4, 14, 8, 13, 2, 15, 10, 1, 16, 12, 5, 11, 6], 4), 32);
     }
+
+    #[test]
+    fn test8() {
+        assert_eq!(Solution::min_difficulty(vec![10, 1, 16, 12, 5, 11, 6], 4), 33);
+    }
 }
+
 
 struct Solution {}
 fn main() {
